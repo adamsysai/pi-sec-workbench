@@ -1,0 +1,74 @@
+name: Verify
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: workbench_test
+          POSTGRES_USER: workbench
+          POSTGRES_PASSWORD: local-ci-only
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U workbench -d workbench_test"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql://workbench:local-ci-only@localhost:5432/workbench_test?sslmode=disable
+      REQUIRE_DB_TESTS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.x'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run check
+      - name: Format, vet, race and integration tests
+        run: |
+          test -z "$(gofmt -l cmd internal)"
+          go vet ./...
+          go test -race -count=1 ./...
+          go build -o .local/coordinator ./cmd/coordinator
+      - name: End-to-end SDK against real service
+        run: |
+          export API_TOKEN="$(openssl rand -hex 32)"
+          export DATABASE_URL="$TEST_DATABASE_URL"
+          .local/coordinator > /tmp/coordinator.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid"' EXIT
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8787/healthz && break || sleep 1; done
+          node --experimental-strip-types scripts/e2e.ts
+          npm run demo
+      - name: Docker Compose smoke test
+        run: |
+          node scripts/init-env.mjs
+          set -a
+          . ./.env
+          set +a
+          trap 'docker compose down --volumes' EXIT
+          docker compose up --build -d
+          ready=0
+          for i in $(seq 1 60); do
+            if curl -fsS http://127.0.0.1:8787/healthz; then ready=1; break; fi
+            sleep 1
+          done
+          test "$ready" = 1
+          node --experimental-strip-types scripts/e2e.ts
+          npm run demo
+      - name: Scan full Git history for secrets
+        run: |
+          go install github.com/zricethezav/gitleaks/v8@v8.30.0
+          gitleaks git --redact --no-banner .

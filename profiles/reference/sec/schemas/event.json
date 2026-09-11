@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pi.local/profiles/sec/schemas/event.json",
+  "title": "Swarm Event",
+  "description": "An event emitted by an agent within the security swarm for inter-agent coordination.",
+  "type": "object",
+  "required": ["event_type", "source", "target", "data", "timestamp"],
+  "additionalProperties": false,
+  "properties": {
+    "event_type": {
+      "description": "The type of swarm event.",
+      "type": "string",
+      "enum": [
+        "task.created",
+        "task.claimed",
+        "task.completed",
+        "asset.discovered",
+        "endpoint.discovered",
+        "identity.discovered",
+        "hypothesis.created",
+        "hypothesis.updated",
+        "hypothesis.disputed",
+        "hypothesis.validated",
+        "hypothesis.rejected",
+        "finding.discovered",
+        "scope.violation",
+        "agent.spawned",
+        "agent.failed"
+      ]
+    },
+    "source": {
+      "description": "Agent or component that emitted the event.",
+      "type": "string",
+      "minLength": 1
+    },
+    "target": {
+      "description": "Agent, task, hypothesis, or asset the event is directed at.",
+      "type": "string"
+    },
+    "data": {
+      "description": "Event-specific payload.",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "timestamp": {
+      "description": "ISO 8601 timestamp when the event was emitted.",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

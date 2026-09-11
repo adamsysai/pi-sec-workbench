@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: workbench
+      POSTGRES_USER: workbench
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Generate POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, pg_isready -U workbench -d workbench]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  coordinator:
+    build: .
+    ports:
+      - 127.0.0.1:8787:8787
+    environment:
+      DATABASE_URL: postgresql://workbench:${POSTGRES_PASSWORD}@db:5432/workbench?sslmode=disable
+      API_TOKEN: ${API_TOKEN:?Generate API_TOKEN in .env}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  pgdata:

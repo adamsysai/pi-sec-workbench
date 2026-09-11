@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pi.local/profiles/sec/schemas/finding.json",
+  "title": "Security Finding",
+  "description": "A validated security finding discovered during an engagement.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "severity",
+    "affected_component",
+    "security_impact",
+    "attack_path",
+    "evidence",
+    "reproduction_summary",
+    "prerequisites",
+    "confidence",
+    "related_findings",
+    "validator_notes",
+    "critic_notes",
+    "status",
+    "created_at",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "description": "Unique identifier for the finding (e.g. F-001).",
+      "type": "string",
+      "pattern": "^F-\\d{3}$"
+    },
+    "title": {
+      "description": "Short descriptive title of the finding.",
+      "type": "string",
+      "minLength": 1
+    },
+    "severity": {
+      "description": "Severity rating of the finding.",
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low", "info"]
+    },
+    "affected_component": {
+      "description": "The component, service, or asset affected by this finding.",
+      "type": "string",
+      "minLength": 1
+    },
+    "security_impact": {
+      "description": "Description of the security impact if this finding is exploited.",
+      "type": "string",
+      "minLength": 1
+    },
+    "attack_path": {
+      "description": "Step-by-step description of how an attacker would exploit this finding.",
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "description": "Supporting evidence for the finding.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "content"],
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "description": "Type of evidence (e.g. request, response, screenshot, log, command-output).",
+            "type": "string",
+            "minLength": 1
+          },
+          "content": {
+            "description": "The evidence content itself.",
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "reproduction_summary": {
+      "description": "Summary of how to reproduce the finding.",
+      "type": "string",
+      "minLength": 1
+    },
+    "prerequisites": {
+      "description": "Prerequisites required to exploit or reproduce this finding.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "description": "Confidence score from 0 (none) to 1 (absolute certainty).",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "related_findings": {
+      "description": "IDs of related findings.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^F-\\d{3}$"
+      }
+    },
+    "validator_notes": {
+      "description": "Notes from the validator agent.",
+      "type": "string"
+    },
+    "critic_notes": {
+      "description": "Notes from the critic agent.",
+      "type": "string"
+    },
+    "status": {
+      "description": "Current lifecycle status of the finding.",
+      "type": "string",
+      "enum": ["draft", "validated", "rejected"]
+    },
+    "created_at": {
+      "description": "ISO 8601 timestamp when the finding was created.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "ISO 8601 timestamp when the finding was last updated.",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

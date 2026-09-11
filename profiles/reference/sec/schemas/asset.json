@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pi.local/profiles/sec/schemas/asset.json",
+  "title": "Discovered Asset",
+  "description": "An asset discovered during reconnaissance or engagement activity.",
+  "type": "object",
+  "required": [
+    "id",
+    "type",
+    "value",
+    "discovered_by",
+    "discovered_at",
+    "metadata",
+    "confidence",
+    "tags"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "description": "Unique identifier for the asset.",
+      "type": "string",
+      "minLength": 1
+    },
+    "type": {
+      "description": "Type of the discovered asset.",
+      "type": "string",
+      "enum": ["domain", "subdomain", "endpoint", "service", "api", "technology", "credential"]
+    },
+    "value": {
+      "description": "The asset value (e.g. hostname, URL, service banner, tech name).",
+      "type": "string",
+      "minLength": 1
+    },
+    "discovered_by": {
+      "description": "Agent or tool that discovered this asset.",
+      "type": "string",
+      "minLength": 1
+    },
+    "discovered_at": {
+      "description": "ISO 8601 timestamp when the asset was discovered.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "description": "Additional metadata about the asset (ports, headers, response codes, etc.).",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "confidence": {
+      "description": "Confidence score from 0 (none) to 1 (absolute certainty).",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "tags": {
+      "description": "Free-form tags for categorization and filtering.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

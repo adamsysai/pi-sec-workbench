@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pi.local/profiles/sec/schemas/task.json",
+  "title": "Task",
+  "description": "A unit of work within a security engagement, assigned to or claimed by an agent.",
+  "type": "object",
+  "required": [
+    "id",
+    "parent_task",
+    "owner",
+    "status",
+    "priority",
+    "target",
+    "hypothesis",
+    "dependencies",
+    "evidence",
+    "created_at",
+    "updated_at",
+    "estimated_cost",
+    "actual_cost"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "description": "Unique identifier for the task (e.g. T-001).",
+      "type": "string",
+      "pattern": "^T-\\d{3}$"
+    },
+    "parent_task": {
+      "description": "ID of the parent task, or null if this is a root task.",
+      "type": ["string", "null"]
+    },
+    "owner": {
+      "description": "Agent currently owning or working on this task.",
+      "type": "string"
+    },
+    "status": {
+      "description": "Current status of the task.",
+      "type": "string",
+      "enum": ["pending", "claimed", "running", "blocked", "completed", "failed", "cancelled"]
+    },
+    "priority": {
+      "description": "Priority level P0 (highest) through P4 (lowest).",
+      "type": "string",
+      "enum": ["P0", "P1", "P2", "P3", "P4"]
+    },
+    "target": {
+      "description": "Target asset, component, or scope this task operates on.",
+      "type": "string"
+    },
+    "hypothesis": {
+      "description": "Hypothesis ID this task is investigating, or null if none.",
+      "type": ["string", "null"],
+      "pattern": "^H-\\d{3}$"
+    },
+    "dependencies": {
+      "description": "IDs of tasks that must complete before this task can start.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^T-\\d{3}$"
+      }
+    },
+    "evidence": {
+      "description": "Evidence collected during task execution.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "created_at": {
+      "description": "ISO 8601 timestamp when the task was created.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "ISO 8601 timestamp when the task was last updated.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "estimated_cost": {
+      "description": "Estimated cost of executing the task (in agent-credits or time units).",
+      "type": ["number", "string"],
+      "minimum": 0
+    },
+    "actual_cost": {
+      "description": "Actual cost incurred executing the task.",
+      "type": ["number", "string"]
+    }
+  }
+}

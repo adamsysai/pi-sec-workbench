@@ -1,0 +1,427 @@
+#!/usr/bin/env node
+/**
+ * pi-profile — CLI wrapper for Pi Profile Manager
+ *
+ * Usage:
+ *   pi-profile list                    List available profiles
+ *   pi-profile use <name>             Launch pi with the selected profile
+ *   pi-profile info <name>            Show profile details
+ *   pi-profile current                Show current active profile
+ *   pi-profile doctor                  Diagnose profile configuration
+ *   pi-profile install [name]          Install pinned packages for a profile
+ *   pi-profile update [name]           Update packages for a profile
+ *
+ * This wrapper reads profile.json files from ~/.pi/agent/profiles/<name>/
+ * and translates them into pi CLI flags, then spawns pi with those flags.
+ */
+
+const fs = require("node:fs");
+const path = require("node:path");
+const os = require("node:os");
+const { spawn } = require("node:child_process");
+
+const PROFILES_DIR = path.join(os.homedir(), ".pi", "agent", "profiles");
+const STATE_FILE = path.join(os.homedir(), ".pi", "agent", ".pi-profile-state.json");
+
+function readCurrentProfile() {
+  try {
+    if (!fs.existsSync(STATE_FILE)) return null;
+    const data = JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
+    return data.profile ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCurrentProfile(profile) {
+  try {
+    fs.writeFileSync(STATE_FILE, JSON.stringify({ profile, timestamp: Date.now() }, null, 2), "utf8");
+  } catch {}
+}
+
+function loadProfile(name) {
+  const configPath = path.join(PROFILES_DIR, name, "profile.json");
+  if (!fs.existsSync(configPath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(configPath, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function listProfiles() {
+  if (!fs.existsSync(PROFILES_DIR)) return [];
+  const profiles = [];
+  for (const entry of fs.readdirSync(PROFILES_DIR, { withFileTypes: true })) {
+    if (!entry.isDirectory() || entry.name.startsWith("_") || entry.name.startsWith(".")) continue;
+    const configPath = path.join(PROFILES_DIR, entry.name, "profile.json");
+    if (!fs.existsSync(configPath)) continue;
+    try {
+      const config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+      profiles.push({ name: entry.name, config });
+    } catch {}
+  }
+  return profiles.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function findPiBinary() {
+  // Try PATH first
+  const which = require("child_process").spawnSync("which", ["pi"], { encoding: "utf8" });
+  if (which.status === 0 && which.stdout.trim()) return which.stdout.trim();
+  // Fallback
+  return "pi";
+}
+
+/**
+ * Write a project-local .pi/settings.json that merges the profile's
+ * packages into the current directory so pi picks them up at launch.
+ * Returns the path to the written file (or null if nothing written).
+ */
+function writeProjectSettings(profile, cwd) {
+  if (!profile.packages?.length) return null;
+  const piDir = path.join(cwd, ".pi");
+  const settingsPath = path.join(piDir, "settings.json");
+  fs.mkdirSync(piDir, { recursive: true });
+
+  let existing = {};
+  if (fs.existsSync(settingsPath)) {
+    try { existing = JSON.parse(fs.readFileSync(settingsPath, "utf8")); } catch {}
+  }
+  const existingPkgs = new Set(existing.packages || []);
+  const merged = [...existingPkgs];
+  for (const pkg of profile.packages) {
+    if (!existingPkgs.has(pkg)) merged.push(pkg);
+  }
+  existing.packages = merged;
+  fs.writeFileSync(settingsPath, JSON.stringify(existing, null, 2), "utf8");
+  return settingsPath;
+}
+
+function buildPiArgs(profile, profileDir, extraArgs = []) {
+  const args = [];
+
+  // Write project-local settings with profile packages so pi loads them
+  const cwd = process.cwd();
+  const settingsPath = writeProjectSettings(profile, cwd);
+  if (settingsPath) {
+    args.push("--approve");  // trust project-local files
+  }
+
+  // Use provider/model format to avoid ambiguity
+  if (profile.model) {
+    if (profile.model.includes("/")) {
+      args.push("--model", profile.model);
+    } else if (profile.provider) {
+      args.push("--model", `${profile.provider}/${profile.model}`);
+    } else {
+      args.push("--model", profile.model);
+    }
+  }
+  if (profile.thinking) args.push("--thinking", profile.thinking);
+
+  // System prompt
+  if (profile.systemPrompt) {
+    let promptPath;
+    if (profile.systemPrompt.startsWith("/") || profile.systemPrompt.startsWith("~")) {
+      promptPath = profile.systemPrompt.replace(/^~/, os.homedir());
+    } else {
+      promptPath = path.join(profileDir, profile.systemPrompt);
+    }
+    if (fs.existsSync(promptPath)) {
+      args.push("--append-system-prompt", promptPath);
+    } else if (fs.existsSync(profile.systemPrompt)) {
+      args.push("--append-system-prompt", profile.systemPrompt);
+    } else {
+      args.push("--append-system-prompt", profile.systemPrompt);
+    }
+  }
+
+  // Extensions
+  if (profile.extensions) {
+    for (const ext of profile.extensions) {
+      const extPath = ext.startsWith("/") || ext.startsWith("~") ? ext.replace(/^~/, os.homedir()) : path.join(profileDir, ext);
+      args.push("--extension", extPath);
+    }
+  }
+
+  // Skills
+  if (profile.skills) {
+    for (const skill of profile.skills) {
+      const skillPath = skill.startsWith("/") || skill.startsWith("~") ? skill.replace(/^~/, os.homedir()) : path.join(profileDir, skill);
+      args.push("--skill", skillPath);
+    }
+  }
+
+  // Tool denylist
+  if (profile.excludeTools?.length) {
+    args.push("--exclude-tools", profile.excludeTools.join(","));
+  }
+
+  // Tool allowlist
+  if (profile.allowTools?.length) {
+    const builtins = ["read", "bash", "edit", "write"];
+    const allTools = [...new Set([...builtins, ...profile.allowTools])];
+    args.push("--tools", allTools.join(","));
+  }
+
+  // Session dir — use the directory name (not profile.name which may have a prefix)
+  const sessionDir = profile.sessionDir
+    ? profile.sessionDir.replace(/^~/, os.homedir())
+    : path.join(os.homedir(), ".pi", "agent", "sessions", path.basename(profileDir));
+  args.push("--session-dir", sessionDir);
+
+  // Profile extension flag — use directory name
+  args.push("--profile", path.basename(profileDir));
+
+  // Always load the profiles extension
+  const profilesExt = path.join(PROFILES_DIR, "_common", "pi-profiles.ts");
+  if (fs.existsSync(profilesExt)) {
+    args.push("--extension", profilesExt);
+  }
+
+  args.push(...extraArgs);
+  return args;
+}
+
+function buildEnv(profile) {
+  const env = { ...process.env };
+  if (profile.env) {
+    for (const [key, value] of Object.entries(profile.env)) {
+      env[key] = value.replace(/^~/, os.homedir());
+    }
+  }
+  return env;
+}
+
+// === Commands ===
+
+function cmdList() {
+  const profiles = listProfiles();
+  const current = readCurrentProfile();
+  if (profiles.length === 0) {
+    console.log("No profiles found. Create profiles in ~/.pi/agent/profiles/<name>/profile.json");
+    return;
+  }
+  console.log("\n  Available profiles:\n");
+  for (const p of profiles) {
+    const marker = p.name === current ? ">" : " ";
+    const model = p.config.model ? ` [${p.config.model}]` : "";
+    const desc = p.config.description ? ` — ${p.config.description}` : "";
+    console.log(`  ${marker} ${p.name}${model}${desc}`);
+  }
+  console.log("");
+}
+
+function cmdUse(profileName, extraArgs) {
+  const profile = loadProfile(profileName);
+  if (!profile) {
+    console.error(`✗ Profile '${profileName}' not found.`);
+    console.error("Available profiles:");
+    const profiles = listProfiles();
+    for (const p of profiles) console.error(`  - ${p.name}`);
+    process.exit(1);
+  }
+  writeCurrentProfile(profileName);
+
+  const profileDir = path.join(PROFILES_DIR, profileName);
+  const args = buildPiArgs(profile, profileDir, extraArgs);
+  const env = buildEnv(profile);
+  const piBin = findPiBinary();
+
+  console.log(`→ Launching pi with profile '${profileName}' [${profile.model || "default"}]`);
+  const child = spawn(piBin, args, { stdio: "inherit", env, cwd: process.cwd() });
+
+  child.on("error", (err) => {
+    console.error(`✗ Failed to launch pi: ${err.message}`);
+    process.exit(1);
+  });
+  child.on("exit", (code) => {
+    process.exit(code ?? 0);
+  });
+}
+
+function cmdInfo(profileName) {
+  const profile = loadProfile(profileName);
+  if (!profile) {
+    console.error(`✗ Profile '${profileName}' not found.`);
+    process.exit(1);
+  }
+  console.log(`\n  Profile: ${profile.name}`);
+  console.log(`  ${profile.description}`);
+  console.log("");
+  if (profile.model) console.log(`  Model:        ${profile.model}`);
+  if (profile.thinking) console.log(`  Thinking:     ${profile.thinking}`);
+  if (profile.packages?.length) console.log(`  Packages:     ${profile.packages.join(", ")}`);
+  if (profile.extensions?.length) console.log(`  Extensions:   ${profile.extensions.length} local`);
+  if (profile.skills?.length) console.log(`  Skills:       ${profile.skills.length} directories`);
+  if (profile.excludeTools?.length) console.log(`  Exclude:      ${profile.excludeTools.join(", ")}`);
+  if (profile.allowTools?.length) console.log(`  Allow:        ${profile.allowTools.join(", ")}`);
+  if (profile.env && Object.keys(profile.env).length) console.log(`  Env vars:     ${Object.keys(profile.env).length}`);
+  if (profile.swarm?.enabled) console.log(`  Swarm:        enabled (${profile.swarm.subagents?.join(", ") || "default"})`);
+  if (profile.scope?.authorized !== undefined) {
+    console.log(`  Scope:        ${profile.scope.authorized ? "authorized" : "unauthorized"}`);
+    if (profile.scope.targets?.length) console.log(`  Targets:      ${profile.scope.targets.join(", ")}`);
+  }
+  console.log("");
+}
+
+function cmdCurrent() {
+  const current = readCurrentProfile();
+  if (!current) {
+    console.log("No profile currently active.");
+    return;
+  }
+  const profile = loadProfile(current);
+  if (!profile) {
+    console.log(`Current profile: ${current} (config missing)`);
+    return;
+  }
+  cmdInfo(current);
+}
+
+function cmdDoctor() {
+  console.log("\n  Pi Profile Manager — Diagnostics\n");
+  let ok = true;
+
+  // Check profiles dir
+  if (!fs.existsSync(PROFILES_DIR)) {
+    console.log("  ✗ Profiles directory not found: " + PROFILES_DIR);
+    ok = false;
+  } else {
+    const profiles = listProfiles();
+    console.log(`  ✓ Profiles directory: ${profiles.length} profiles found`);
+    for (const p of profiles) {
+      console.log(`    - ${p.name}: ${p.config.description}`);
+    }
+  }
+
+  // Check pi binary
+  const piBin = findPiBinary();
+  if (piBin === "pi") {
+    console.log("  ⚠ Pi binary not found in PATH");
+    ok = false;
+  } else {
+    console.log(`  ✓ Pi binary: ${piBin}`);
+  }
+
+  // Check profiles extension
+  const profilesExt = path.join(PROFILES_DIR, "_common", "pi-profiles.ts");
+  if (fs.existsSync(profilesExt)) {
+    console.log("  ✓ Profile extension found");
+  } else {
+    console.log("  ✗ Profile extension missing: " + profilesExt);
+    ok = false;
+  }
+
+  // Check schema
+  const schema = path.join(PROFILES_DIR, "_common", "profile-schema.json");
+  if (fs.existsSync(schema)) {
+    console.log("  ✓ Profile schema found");
+  } else {
+    console.log("  ⚠ Profile schema missing");
+  }
+
+  // Validate each profile
+  const profiles = listProfiles();
+  for (const p of profiles) {
+    const systemMd = path.join(PROFILES_DIR, p.name, "system.md");
+    if (p.config.systemPrompt && !fs.existsSync(systemMd)) {
+      console.log(`  ⚠ ${p.name}: systemPrompt set but system.md not found`);
+    }
+    // Check pinned packages
+    if (p.config.packages?.length) {
+      for (const pkg of p.config.packages) {
+        if (!pkg.includes("@") || pkg.startsWith("npm:@") || pkg.startsWith("github:")) {
+          // version pinned ok
+        } else if (!pkg.includes("@")) {
+          console.log(`  ⚠ ${p.name}: package '${pkg}' not version-pinned`);
+        }
+      }
+    }
+  }
+
+  console.log(ok ? "\n  ✓ All checks passed\n" : "\n  ✗ Some checks failed\n");
+}
+
+function cmdInstall(profileName) {
+  const profile = loadProfile(profileName);
+  if (!profile) {
+    console.error(`✗ Profile '${profileName}' not found.`);
+    process.exit(1);
+  }
+  if (!profile.packages?.length) {
+    console.log(`Profile '${profileName}' has no packages to install.`);
+    return;
+  }
+  console.log(`\n  Installing packages for '${profileName}':\n`);
+  const piBin = findPiBinary();
+  for (const pkg of profile.packages) {
+    const pkgSpec = pkg.includes("@") ? pkg : `npm:${pkg}`;
+    console.log(`  → ${pkgSpec}`);
+    const result = require("child_process").spawnSync(piBin, ["install", pkgSpec, "-l"], {
+      stdio: "inherit",
+      cwd: process.cwd(),
+    });
+    if (result.status !== 0) {
+      console.error(`  ✗ Failed to install ${pkgSpec}`);
+    }
+  }
+  console.log("\n  Done.\n");
+}
+
+// === Main ===
+
+const [command, ...rest] = process.argv.slice(2);
+
+switch (command) {
+  case "list":
+  case undefined:
+    cmdList();
+    break;
+  case "use":
+    if (!rest[0]) {
+      console.error("Usage: pi-profile use <name>");
+      process.exit(1);
+    }
+    cmdUse(rest[0], rest.slice(1));
+    break;
+  case "info":
+    if (!rest[0]) {
+      console.error("Usage: pi-profile info <name>");
+      process.exit(1);
+    }
+    cmdInfo(rest[0]);
+    break;
+  case "current":
+    cmdCurrent();
+    break;
+  case "doctor":
+    cmdDoctor();
+    break;
+  case "install":
+    cmdInstall(rest[0] || readCurrentProfile());
+    break;
+  case "help":
+  case "--help":
+  case "-h":
+    console.log(`
+  pi-profile — Pi Profile Manager
+
+  Usage:
+    pi-profile list                  List available profiles
+    pi-profile use <name> [args...]  Launch pi with the selected profile
+    pi-profile info <name>           Show profile details
+    pi-profile current               Show current active profile
+    pi-profile doctor                Diagnose profile configuration
+    pi-profile install [name]         Install pinned packages for a profile
+    pi-profile help                   Show this help
+
+  Profiles are stored in ~/.pi/agent/profiles/<name>/profile.json
+  Schema: ~/.pi/agent/profiles/_common/profile-schema.json
+`);
+    break;
+  default:
+    console.error(`Unknown command: ${command}`);
+    console.error("Run 'pi-profile help' for usage.");
+    process.exit(1);
+}

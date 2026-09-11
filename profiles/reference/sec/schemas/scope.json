@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pi.local/profiles/sec/schemas/scope.json",
+  "title": "Engagement Scope",
+  "description": "Defines the authorized scope for a security engagement, including targets, boundaries, and enforcement mode.",
+  "type": "object",
+  "required": ["targets", "allowed_domains", "excluded", "authorized", "enforcement"],
+  "additionalProperties": false,
+  "properties": {
+    "targets": {
+      "description": "Authorized targets for the engagement.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "allowed_domains": {
+      "description": "Domains and subdomains explicitly within scope.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "excluded": {
+      "description": "Domains, assets, or paths explicitly out of scope.",
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "authorized": {
+      "description": "Whether the engagement is explicitly authorized.",
+      "type": "boolean"
+    },
+    "enforcement": {
+      "description": "How strictly scope violations are enforced.",
+      "type": "string",
+      "enum": ["strict", "advisory"]
+    }
+  }
+}

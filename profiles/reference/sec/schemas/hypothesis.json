@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pi.local/profiles/sec/schemas/hypothesis.json",
+  "title": "Hypothesis",
+  "description": "A security hypothesis to be investigated, validated, or rejected.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "evidence",
+    "assumptions",
+    "expected_behavior",
+    "observed_behavior",
+    "confidence",
+    "potential_impact",
+    "next_investigation",
+    "lifecycle",
+    "created_by",
+    "created_at",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "description": "Unique identifier for the hypothesis (e.g. H-001).",
+      "type": "string",
+      "pattern": "^H-\\d{3}$"
+    },
+    "title": {
+      "description": "Short descriptive title of the hypothesis.",
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence": {
+      "description": "Evidence supporting or refuting the hypothesis.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "assumptions": {
+      "description": "Assumptions underlying the hypothesis.",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_behavior": {
+      "description": "What the system is expected to do under the hypothesis.",
+      "type": "string"
+    },
+    "observed_behavior": {
+      "description": "What was actually observed during investigation.",
+      "type": "string"
+    },
+    "confidence": {
+      "description": "Confidence score from 0 (none) to 1 (absolute certainty).",
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "potential_impact": {
+      "description": "Potential security impact if the hypothesis is confirmed.",
+      "type": "string"
+    },
+    "next_investigation": {
+      "description": "Next investigative step to validate or reject the hypothesis.",
+      "type": "string"
+    },
+    "lifecycle": {
+      "description": "Current lifecycle stage of the hypothesis.",
+      "type": "string",
+      "enum": [
+        "created",
+        "investigating",
+        "correlated",
+        "criticized",
+        "validating",
+        "confirmed",
+        "rejected",
+        "unresolved"
+      ]
+    },
+    "created_by": {
+      "description": "Agent or user that created the hypothesis.",
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "description": "ISO 8601 timestamp when the hypothesis was created.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "ISO 8601 timestamp when the hypothesis was last updated.",
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

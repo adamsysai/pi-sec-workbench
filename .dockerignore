@@ -1,0 +1,9 @@
+.git
+.local
+.env
+.env.*
+node_modules
+profiles
+coverage
+web/dist
+docs

@@ -1,0 +1,354 @@
+[
+  {
+    "path": "profiles/reference/sec/extensions/budget-manager.ts",
+    "sha256": "12cdc4fc21000732704854a67face49233959e637b30fc0ec6b56026f8c21fac"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/collective-memory.ts",
+    "sha256": "c966952a6c8de415b2c96c18c082e724a478c73c3a71c525490b6ee08b9b7cdc"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/corpus-ingestor.ts",
+    "sha256": "00f596453150271a2ca91aed122c6886735e5d3f09866c9a6ff524850696a92f"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/evaluation.ts",
+    "sha256": "0ce9a2bc1b7e4dcc99364adf598ca8720afaaba9f67fb6922940c57fa84937f4"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/learning-loop.ts",
+    "sha256": "8d1c6a15611307a852e561cc1fb2d50c3103b6cb0628cbd910b02b74ab431a13"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/observability.ts",
+    "sha256": "18129e0e4d91fb6502d4c8877897f6a73892f3a5b0a2613b6fa6fd54f179f3cc"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/pattern-library.ts",
+    "sha256": "2fddf12bff7503a98b8ab18e87ae4bfad7bd20b26aa5ae8673a9487d3c2e911c"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/scope-guard-v2.ts",
+    "sha256": "420654e95ebaddf75693a2bb4daf3605973562db3f69272065f778175b911e77"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/scope-guard.ts",
+    "sha256": "a011901d20acbba393ea5cc2d0768120dbec26cc937f194f2a56003f72d7d834"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/security-graph.ts",
+    "sha256": "e6673978e25b3daa9c4333f6b352ff8b320c0f48fa0790cd54cd673c2d3b357d"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/security-rag.ts",
+    "sha256": "82ff16fef89b91274cb139fe6094ff018cef196962da99447acd68e061203e75"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/task-manager.ts",
+    "sha256": "707a95eb16d85e1953534ccaad54c86e029e556f2950e06b2ed8028ac36a8f2f"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/web-ui/README.md",
+    "sha256": "91d34660926faa8c9a53523fdf5d05e88678b58b93eb8278faa28b7a993d749f"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/web-ui/index.ts",
+    "sha256": "b1d662a7c295cdab84a6f5b822ac60b66eef0d91526bbe8b5d2534440e69a86d"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/web-ui/public/css/app.css",
+    "sha256": "b3c171edd43b9df8b9292d2093c6bbbabde9f78bf77d1629c683acb45f1e28a5"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/web-ui/public/index.html",
+    "sha256": "075e5e38dd589aa27451e2bea5e8bbbfcd42904277a3ed9b93af0ba345f3c92a"
+  },
+  {
+    "path": "profiles/reference/sec/extensions/web-ui/public/js/app.js",
+    "sha256": "c7575d040541424e0f87e7ff362eb67af34a4f8b8c1d531ef6aa92c79926d9ed"
+  },
+  {
+    "path": "profiles/reference/sec/profile.json",
+    "sha256": "0855e90f8b9ef983672e780fec7f683f300f2f8c75cdbc2ddf2c53561efd4d18"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/api.md",
+    "sha256": "77d25c0d856c235d7982b21174ca25565b275c1268cdedbf13578373aa16eedd"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/architecture.md",
+    "sha256": "5bc5d178381c8e4a615705590456cb49139d1fa0ef2b06fe2b71abfb93fca7f9"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/attack-chain.md",
+    "sha256": "d3abab2f10a0b87486379eb08ecb98c4a356318e2e35498fceec20d89d6fe94e"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/auth.md",
+    "sha256": "2d8994dcf34ff8134bba4b5919870a3cfa7e92a5555c95c4aa67e40ed0c2fae5"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/authorization.md",
+    "sha256": "28b17adb93681f5a5f4e3487faf7eaccaf1916440dbe5c2bb24e3cd6f22429e5"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/business-logic.md",
+    "sha256": "d6facbd0a54ba41be88f759584aa019a48dd6f2ce2665e0b4c466d08a7981b8d"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/correlation.md",
+    "sha256": "95954104eff8c2bf723f447bf9ddd536c72b89e5121ddfed5c3ae37da267f3f5"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/critic.md",
+    "sha256": "67f719a261a96bc0be168e2f80bad6ebdb31758add5e5f1a7afdaad8d9da2545"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/dataflow.md",
+    "sha256": "a88ba069b3a5b99351702bfa8cec14e176929bec956f83b68ba85fb5a923b89d"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/defense-aware.md",
+    "sha256": "51b1654f18b1d3accd125bf13a953d27db3bdee4b04aa0a272814ee57757bead"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/hypothesis.md",
+    "sha256": "34a492ee6ec25e98c7b3f2358f00f96d408864bebb4b4ac7b732d2b975454f76"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/identity.md",
+    "sha256": "b25d3ed5928ae78af230e05cdbe4ab8d5b01c300897be8d9bd221b2f1075c73f"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/meta-reasoner.md",
+    "sha256": "f1e0c8ff2d13802631459711a2410b8363c28ee2fd840891fad858e2b0b04d45"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/orchestrator.md",
+    "sha256": "3726bd71fd01524f689d88ef2ea58cac5c262280c68d78e97472ef35791f675e"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/recon.md",
+    "sha256": "3227f7e951987f827028dfd2a245c8fd84066144abcaa3e112d9597c6d0524dd"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/synthesizer.md",
+    "sha256": "b78006fdf70d7f727d89609c25e9f70c5af08354418497f954b9c05a1889bcda"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/validator.md",
+    "sha256": "d0b5e47122a89114bbe4fc66e4f8a45e5a48be927472056fd3e8a2a9b5c13ac6"
+  },
+  {
+    "path": "profiles/reference/sec/prompts/web.md",
+    "sha256": "fb2e03b5f0daa26b9b06720372c0ef97f148fb1a8fedabfcc33044c99e4d4bc4"
+  },
+  {
+    "path": "profiles/reference/sec/schemas/asset.json",
+    "sha256": "81afe1eccd6be1ae94757c14699bd69db64fb40e0a761fda732808185dcf96b9"
+  },
+  {
+    "path": "profiles/reference/sec/schemas/event.json",
+    "sha256": "718ebc79f600fd4eb01431a152b34d0c43339183331c683bf28a260f78117948"
+  },
+  {
+    "path": "profiles/reference/sec/schemas/finding.json",
+    "sha256": "5768ce5d2f89bbb13ebfc391903425b83f1acbda7789a0418183a013dcf3f3d0"
+  },
+  {
+    "path": "profiles/reference/sec/schemas/hypothesis.json",
+    "sha256": "b1f0d13e43e3d3aa072871f30ee82f1453c73d58f24f81279cca7b6fea9451ca"
+  },
+  {
+    "path": "profiles/reference/sec/schemas/scope.json",
+    "sha256": "39cb64de4429b99ea10de32b2dc9efe19ca9796ab99b4189409cacbdab59b175"
+  },
+  {
+    "path": "profiles/reference/sec/schemas/task.json",
+    "sha256": "4804aaece9fc83ac6ff9e8f4e54088c83647c9b1778517d6a883d04db7edaeef"
+  },
+  {
+    "path": "profiles/reference/sec/skills/api-security/SKILL.md",
+    "sha256": "cc33f3ffeeab0b24368a4eeb3623b1f26c6391a5f04610fcc5b4c1e53bb482bb"
+  },
+  {
+    "path": "profiles/reference/sec/skills/auth-testing/SKILL.md",
+    "sha256": "15ff166d7f72798b63978db18ac660963b8014f56a5c94e82ff8498013741bee"
+  },
+  {
+    "path": "profiles/reference/sec/skills/cloud-security/SKILL.md",
+    "sha256": "4b0363456abd0fa53b48f3e9d56c58b36475dda316657bf47c26f19495032fde"
+  },
+  {
+    "path": "profiles/reference/sec/skills/defi-taxonomy/audit-checklist.md",
+    "sha256": "0873936cdf0f40062cb8414d30485ebc2fcf6e6784365da40cb56e12d0ba5159"
+  },
+  {
+    "path": "profiles/reference/sec/skills/defi-taxonomy/hack-database.md",
+    "sha256": "154270d97dcb836ba17716e63732ed5899dfb20be929bf2324212493c0634638"
+  },
+  {
+    "path": "profiles/reference/sec/skills/defi-taxonomy/non-evm-patterns.md",
+    "sha256": "14abca226bdbc01e0a389c32e1b4d94ab6d84f7440adfeb339ffe14e1de7f36c"
+  },
+  {
+    "path": "profiles/reference/sec/skills/defi-taxonomy/vulnerability-classes.md",
+    "sha256": "4bb50a3a9aa82b2f6806b729e80cceb78de2ebbdf67fa69e505e8c1c139e007c"
+  },
+  {
+    "path": "profiles/reference/sec/skills/mobile-security/SKILL.md",
+    "sha256": "a6aa1f42ac829e4b0179fee87ceef2c3a3a64ed63370ccca10a8e1dd86733834"
+  },
+  {
+    "path": "profiles/reference/sec/skills/recon-methodology/api-discovery.md",
+    "sha256": "5d93d3cce20389dca4ec8b5d8048a4147acf8abd13caf444db2e6aaa76ecf832"
+  },
+  {
+    "path": "profiles/reference/sec/skills/recon-methodology/cloud-storage-enum.md",
+    "sha256": "14eaa3ffc9f78b8ae8874c4997fdaf0d7b914aadf1754dd33cab2a822b45fc17"
+  },
+  {
+    "path": "profiles/reference/sec/skills/recon-methodology/recon-playbook.md",
+    "sha256": "265afdddbd80cb4f60b9f748e8a1cb3f6d9502637678148347ac0e6f8e3a6597"
+  },
+  {
+    "path": "profiles/reference/sec/skills/recon-methodology/source-map-mining.md",
+    "sha256": "32697e48bd3b2b95b3672d7d4c69f120b616d2e92640250d0d13b1e7b2174850"
+  },
+  {
+    "path": "profiles/reference/sec/skills/recon-methodology/subdomain-enum.md",
+    "sha256": "c6671d597e72cc1ebba63b429c31f51eb3a655591b83a242bad0171b31f28430"
+  },
+  {
+    "path": "profiles/reference/sec/skills/report-writing/SKILL.md",
+    "sha256": "40a208a58db82746ed6b72fd75ba9db6b3694d082c947e554a0736cee1d397ba"
+  },
+  {
+    "path": "profiles/reference/sec/skills/smart-contract-security/SKILL.md",
+    "sha256": "8f2349a05aa748716ac1a6c3afa6d4c4144c9ac5a2c0f649a4bced585d3a72b8"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/crypto-exchange.md",
+    "sha256": "77e9e563ba038cf89239e668e28b97d79a7b09f45ff93fc1ef2a70bf8f8c2bbd"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/defi-protocol.md",
+    "sha256": "b659ce18fd41bb9ca514ea4febefd3978c09fd538440bd607daf647bfee297f5"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/generic-saas.md",
+    "sha256": "61dbc2e14e06f9993f4174cc271760d707dcbedb9ebe30ae606dff653f24c6ec"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/igaming-casino.md",
+    "sha256": "e119b505d6f44edac29f3eebbdc1066c15e153cb842eae893db8d80ed1b23435"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/job-platform.md",
+    "sha256": "b5d8cec91b20b35fd8c6839b5bcab120a3dc763f43343bb1d145d9382596c376"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/saas-ai-api-gateway.md",
+    "sha256": "5d4d228e198c1b78d41197e4f58b1bd57dd518e4b6e8084b56b4b60ec068c598"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/saas-ai-video.md",
+    "sha256": "689caea1ae57e596071ee351d42237ff8ef30dadf6ac6707c77e0ee206ec0cf6"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/saas-analytics-ecommerce.md",
+    "sha256": "b8855b7fd15e1f8f3b259268cc6fcf67656870cd0a762bcbca550dcedb4d830e"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/saas-no-code-builder.md",
+    "sha256": "375ea44644eb9d14730b6484645bdaea9fb9232559f2e5472de5e4162c6842e3"
+  },
+  {
+    "path": "profiles/reference/sec/skills/target-profiles/saas-social-media-tool.md",
+    "sha256": "6cd17b55a3d7c9aaaea8700e39dd1ba7b7d70d091bf019d0c42a1678a832cf44"
+  },
+  {
+    "path": "profiles/reference/sec/skills/vuln-validation/SKILL.md",
+    "sha256": "efe7193b97db509c017b158412ac13a4cc344ffbe508c92b41914f4c3b28f11d"
+  },
+  {
+    "path": "profiles/reference/sec/skills/web-pentest/SKILL.md",
+    "sha256": "462e64547a27fafe735341cf9e13cc20fcfc33e5fdfcd0375b9e37471d1dab8e"
+  },
+  {
+    "path": "profiles/reference/sec/system.md",
+    "sha256": "fb8b86884873d174d19e8b55e475ccef1e3776ecc1f83e93bba2a20edf9f16d5"
+  },
+  {
+    "path": "profiles/reference/fullstack/profile.json",
+    "sha256": "7ed71fbbe74af77e62cd6716f3c1a90f8a6d8af80521b5951b465218c243cd40"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/api-design/SKILL.md",
+    "sha256": "107b9a198afc47f73c51f0f0e6de945555e5b7cefd68f3a4f66eace33be3c3c4"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/architecture/SKILL.md",
+    "sha256": "2cb1cfadd0c5157857082ab9de037036d72206a95cdfb2edca2c07e527d64f40"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/code-review/SKILL.md",
+    "sha256": "48f5443837e69508de4ecddb1937218b99f663d85bd94224e48b9250506b917c"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/database/SKILL.md",
+    "sha256": "9bdd6d7e807ea86af4f86fa6e7627b757b18c850085451235e20093367b3b435"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/docker-k8s/SKILL.md",
+    "sha256": "d021a300186651c0476dd18624037a6f451fa3ea8f405c888c711b60430401e5"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/git-workflow/SKILL.md",
+    "sha256": "f4eafe2b6f7c4c6a4e09d9b505b50e8a49fa7c8b91069ed5fb86e7f75031dba5"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/go/SKILL.md",
+    "sha256": "f03ea9346eff4391a4c0858b10e76d707085fe0ca29ba0945728b46347acf38d"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/node-js/SKILL.md",
+    "sha256": "f916a241a5165152aca10cf18f4b3edfe3b6780f31455e0f9f92fa7656572155"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/python/SKILL.md",
+    "sha256": "bca07396340bfe3044f3feac39be809d0cf5f26961cd3b53b90dc9e8d5cc9e18"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/react-nextjs/SKILL.md",
+    "sha256": "28a4a572df05bfa993c9baa181e09c0b8fe4eb5a133889896fbe68b2fff3fbc4"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/testing/SKILL.md",
+    "sha256": "049d7b630d72240161a99df35550c6376085ac4b7da0f68b122545316b35c875"
+  },
+  {
+    "path": "profiles/reference/fullstack/skills/typescript/SKILL.md",
+    "sha256": "193a53dcbc98507dfc8813eb407ac8f1b3d902603fb47911e6a736fcb1ab1a3e"
+  },
+  {
+    "path": "profiles/reference/fullstack/system.md",
+    "sha256": "05e25143201bdd879634c74d8902e978862b3576ae427b25e01d4770236df572"
+  },
+  {
+    "path": "profiles/reference/_common/README.md",
+    "sha256": "c1b4620d7450971b5f54b178dcba3e3416a78d3690fc02866879d4f8aa742e65"
+  },
+  {
+    "path": "profiles/reference/_common/pi-profile",
+    "sha256": "e77e034448c16de193a5965ac0b8b79362ddae6d283774d03b893326f113cd32"
+  },
+  {
+    "path": "profiles/reference/_common/pi-profiles.ts",
+    "sha256": "2984fc86bcb84407556fe6f5d7bcec430f245c0096dfe04b3c0dc08a26e91d7c"
+  },
+  {
+    "path": "profiles/reference/_common/profile-schema.json",
+    "sha256": "8eed66833c7ab0fc80c0d989177c34de271df30cb0a05501cae3ba32e3a0c8b1"
+  }
+]

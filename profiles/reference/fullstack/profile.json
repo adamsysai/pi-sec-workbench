@@ -1,0 +1,71 @@
+{
+  "name": "pi-fullstack",
+  "description": "High-end autonomous software engineering",
+  "thinking": "high",
+  "packages": [],
+  "extensions": [],
+  "skills": [
+    "skills/typescript",
+    "skills/react-nextjs",
+    "skills/node-js",
+    "skills/python",
+    "skills/go",
+    "skills/database",
+    "skills/docker-k8s",
+    "skills/api-design",
+    "skills/testing",
+    "skills/architecture",
+    "skills/code-review",
+    "skills/git-workflow"
+  ],
+  "systemPrompt": "system.md",
+  "excludeTools": [
+    "quick_scan",
+    "report",
+    "CaseAdd",
+    "CaseUpdate",
+    "CaseGet",
+    "CaseList",
+    "CaseSearch",
+    "CaseLink",
+    "CaseUnlink",
+    "CaseContext",
+    "ChainSuggest",
+    "CoverageAdd",
+    "CoverageReport",
+    "ConfirmFinding",
+    "PromoteFinding",
+    "EvidenceAdd",
+    "PipelineSubmit",
+    "ScratchpadInit",
+    "ScratchpadResume",
+    "ScratchpadCheckpoint",
+    "ScratchpadWrite",
+    "ScratchpadRead",
+    "ScratchpadPhaseDone",
+    "ScratchpadClear",
+    "ExploitSearch",
+    "scope_check",
+    "scope_set",
+    "telegram_message",
+    "telegram_help",
+    "telegram_attach",
+    "graph_add",
+    "graph_link",
+    "graph_export",
+    "graph_set_target",
+    "graph_clear"
+  ],
+  "env": {
+    "PI_PROFILE": "fullstack"
+  },
+  "swarm": {
+    "enabled": true,
+    "subagents": [
+      "frontend",
+      "backend",
+      "testing",
+      "reviewer"
+    ]
+  }
+}

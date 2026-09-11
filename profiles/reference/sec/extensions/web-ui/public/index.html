@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="description" content="PI-SEC — AI-driven security investigation console">
+  <meta name="theme-color" content="#0a0b0f">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="robots" content="noindex, nofollow">
+  <title>PI-SEC Console</title>
+
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!-- MOBILE NAV DRAWER                                            -->
+  <!-- ============================================================ -->
+  <div id="nav-drawer-backdrop" class="drawer-backdrop" aria-hidden="true"></div>
+  <aside id="nav-drawer" class="nav-drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <div class="nav-drawer-header">
+      <span class="logo-mono">PI-SEC</span>
+      <button id="nav-drawer-close" class="icon-btn" aria-label="Close navigation">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <nav class="nav-drawer-list">
+      <button class="nav-drawer-item" data-view="live">Live Investigation</button>
+      <button class="nav-drawer-item" data-view="graph">Security Graph</button>
+      <button class="nav-drawer-item" data-view="hypotheses">Hypothesis Board</button>
+      <button class="nav-drawer-item" data-view="tasks">Task Graph</button>
+      <button class="nav-drawer-item" data-view="findings">Findings</button>
+    </nav>
+  </aside>
+
+  <!-- ============================================================ -->
+  <!-- TOP BAR                                                      -->
+  <!-- ============================================================ -->
+  <header id="top-bar" class="top-bar">
+    <div class="top-bar-left">
+      <button id="mobile-nav-toggle" class="icon-btn mobile-only" aria-label="Open navigation">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="logo-block">
+        <span class="logo-mono">PI-SEC</span>
+        <span class="logo-suffix">console</span>
+      </div>
+      <div class="target-block">
+        <span class="label-mono">target</span>
+        <span id="target-value" class="value-mono target-value">—</span>
+      </div>
+    </div>
+
+    <div class="top-bar-center">
+      <div class="stat-pill" id="status-indicator" data-status="idle">
+        <span class="status-dot"></span>
+        <span class="status-text">idle</span>
+      </div>
+      <div class="stat-pill">
+        <span class="label-mono">runtime</span>
+        <span id="stat-runtime" class="value-mono">00:00:00</span>
+      </div>
+    </div>
+
+    <div class="top-bar-right">
+      <div class="stat-group">
+        <div class="stat-pill" title="Active agents">
+          <span class="label-mono">agents</span>
+          <span id="stat-agents" class="value-mono">0</span>
+        </div>
+        <div class="stat-pill" title="Total tasks">
+          <span class="label-mono">tasks</span>
+          <span id="stat-tasks" class="value-mono">0</span>
+        </div>
+        <div class="stat-pill" title="Hypotheses">
+          <span class="label-mono">hyp</span>
+          <span id="stat-hypotheses" class="value-mono">0</span>
+        </div>
+        <div class="stat-pill" title="Attack chains">
+          <span class="label-mono">chains</span>
+          <span id="stat-chains" class="value-mono">0</span>
+        </div>
+        <div class="stat-pill" title="Findings">
+          <span class="label-mono">findings</span>
+          <span id="stat-findings" class="value-mono">0</span>
+        </div>
+        <div class="stat-pill cost-pill" title="Total cost">
+          <span class="label-mono">cost</span>
+          <span id="stat-cost" class="value-mono">$0.00</span>
+        </div>
+      </div>
+      <button id="palette-trigger" class="icon-btn" aria-label="Open command palette" title="Command palette (Ctrl+K)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-4.35-4.35"/><circle cx="11" cy="11" r="8"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- MAIN LAYOUT                                                  -->
+  <!-- ============================================================ -->
+  <main id="main-layout" class="main-layout">
+
+    <!-- ========================================================== -->
+    <!-- LEFT PANEL — AGENT LIST                                    -->
+    <!-- ========================================================== -->
+    <aside id="left-panel" class="panel left-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Agents</h2>
+        <span id="agent-count" class="panel-badge value-mono">0</span>
+      </div>
+      <div id="agent-list" class="agent-list" role="list">
+        <!-- Agent items injected by JS -->
+        <div class="empty-state">
+          <span class="value-mono">No agents running.</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========================================================== -->
+    <!-- CENTER PANEL — TABBED VIEW                                 -->
+    <!-- ========================================================== -->
+    <section id="center-panel" class="panel center-panel">
+      <nav id="tab-bar" class="tab-bar" role="tablist">
+        <button class="tab-btn active" role="tab" data-view="live" aria-selected="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <span>Live Investigation</span>
+        </button>
+        <button class="tab-btn" role="tab" data-view="graph" aria-selected="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="5" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><line x1="7" y1="6" x2="10" y2="11"/><line x1="17" y1="6" x2="14" y2="11"/><line x1="7" y1="18" x2="10" y2="13"/><line x1="17" y1="18" x2="14" y2="13"/></svg>
+          <span>Security Graph</span>
+        </button>
+        <button class="tab-btn" role="tab" data-view="hypotheses" aria-selected="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H3v9h6v-9z"/><path d="M21H9v9h12v-9z"/><path d="M21 3H3v6h18V3z"/></svg>
+          <span>Hypothesis Board</span>
+        </button>
+        <button class="tab-btn" role="tab" data-view="tasks" aria-selected="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          <span>Task Graph</span>
+        </button>
+        <button class="tab-btn" role="tab" data-view="findings" aria-selected="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Findings</span>
+        </button>
+      </nav>
+
+      <div id="view-container" class="view-container">
+
+        <!-- ── Live Investigation ── -->
+        <div id="view-live" class="view view-active" role="tabpanel">
+          <div class="view-toolbar">
+            <div class="toolbar-group">
+              <button class="toolbar-btn" data-action="pause" title="Pause stream">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+              </button>
+              <button class="toolbar-btn" data-action="clear" title="Clear log">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
+            </div>
+            <div class="toolbar-group">
+              <label class="filter-toggle">
+                <input type="checkbox" id="filter-errors" data-filter="error">
+                <span class="label-mono">errors</span>
+              </label>
+              <label class="filter-toggle">
+                <input type="checkbox" id="filter-findings" data-filter="finding">
+                <span class="label-mono">findings</span>
+              </label>
+              <label class="filter-toggle">
+                <input type="checkbox" id="filter-actions" data-filter="action">
+                <span class="label-mono">actions</span>
+              </label>
+              <input type="text" id="live-search" class="filter-input" placeholder="filter log…" aria-label="Filter log">
+            </div>
+          </div>
+          <div id="live-log" class="live-log" role="log" aria-live="polite" aria-atomic="false">
+            <div class="empty-state">
+              <span class="value-mono">Awaiting investigation start…</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Security Graph ── -->
+        <div id="view-graph" class="view" role="tabpanel" aria-hidden="true">
+          <div class="view-toolbar">
+            <div class="toolbar-group">
+              <button class="toolbar-btn" data-graph-layout="force" title="Force-directed layout">force</button>
+              <button class="toolbar-btn" data-graph-layout="hierarchical" title="Hierarchical layout">tree</button>
+              <button class="toolbar-btn" data-graph-layout="radial" title="Radial layout">radial</button>
+            </div>
+            <div class="toolbar-group">
+              <button class="toolbar-btn" data-graph-action="fit" title="Fit to view">fit</button>
+              <button class="toolbar-btn" data-graph-action="export" title="Export graph">export</button>
+            </div>
+          </div>
+          <div id="graph-canvas" class="graph-canvas">
+            <canvas id="graph-canvas-el" aria-label="Security graph visualization"></canvas>
+            <div id="graph-tooltip" class="graph-tooltip" role="tooltip" aria-hidden="true"></div>
+            <div class="graph-legend">
+              <div class="legend-item"><span class="legend-dot" data-type="asset"></span><span class="label-mono">asset</span></div>
+              <div class="legend-item"><span class="legend-dot" data-type="vuln"></span><span class="label-mono">vuln</span></div>
+              <div class="legend-item"><span class="legend-dot" data-type="exploit"></span><span class="label-mono">exploit</span></div>
+              <div class="legend-item"><span class="legend-dot" data-type="credential"></span><span class="label-mono">credential</span></div>
+              <div class="legend-item"><span class="legend-dot" data-type="lateral"></span><span class="label-mono">lateral</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Hypothesis Board ── -->
+        <div id="view-hypotheses" class="view" role="tabpanel" aria-hidden="true">
+          <div class="view-toolbar">
+            <div class="toolbar-group">
+              <button class="toolbar-btn active" data-hyp-filter="all">all</button>
+              <button class="toolbar-btn" data-hyp-filter="open">open</button>
+              <button class="toolbar-btn" data-hyp-filter="confirmed">confirmed</button>
+              <button class="toolbar-btn" data-hyp-filter="disproven">disproven</button>
+            </div>
+          </div>
+          <div id="hypothesis-board" class="hypothesis-board">
+            <div class="empty-state">
+              <span class="value-mono">No hypotheses yet.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Task Graph ── -->
+        <div id="view-tasks" class="view" role="tabpanel" aria-hidden="true">
+          <div class="view-toolbar">
+            <div class="toolbar-group">
+              <button class="toolbar-btn active" data-task-filter="all">all</button>
+              <button class="toolbar-btn" data-task-filter="pending">pending</button>
+              <button class="toolbar-btn" data-task-filter="running">running</button>
+              <button class="toolbar-btn" data-task-filter="done">done</button>
+              <button class="toolbar-btn" data-task-filter="failed">failed</button>
+            </div>
+          </div>
+          <div id="task-graph" class="task-graph">
+            <div class="empty-state">
+              <span class="value-mono">No tasks dispatched.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Findings ── -->
+        <div id="view-findings" class="view" role="tabpanel" aria-hidden="true">
+          <div class="view-toolbar">
+            <div class="toolbar-group">
+              <button class="toolbar-btn active" data-find-filter="all">all</button>
+              <button class="toolbar-btn" data-find-filter="critical">critical</button>
+              <button class="toolbar-btn" data-find-filter="high">high</button>
+              <button class="toolbar-btn" data-find-filter="medium">medium</button>
+              <button class="toolbar-btn" data-find-filter="low">low</button>
+              <button class="toolbar-btn" data-find-filter="info">info</button>
+            </div>
+            <div class="toolbar-group">
+              <button class="toolbar-btn" data-find-action="export">export</button>
+            </div>
+          </div>
+          <div id="findings-list" class="findings-list">
+            <div class="empty-state">
+              <span class="value-mono">No findings recorded.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================== -->
+    <!-- RIGHT PANEL — ACTIVITY STREAM                              -->
+    <!-- ========================================================== -->
+    <aside id="right-panel" class="panel right-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Activity</h2>
+        <span id="activity-count" class="panel-badge value-mono">0</span>
+      </div>
+      <div id="activity-stream" class="activity-stream" role="log" aria-live="polite" aria-atomic="false">
+        <div class="empty-state">
+          <span class="value-mono">No events.</span>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- BOTTOM PANEL — SUMMARY BAR                                   -->
+  <!-- ============================================================ -->
+  <footer id="bottom-bar" class="bottom-bar">
+    <div class="summary-section">
+      <span class="summary-label label-mono">hypotheses</span>
+      <div id="summary-hypotheses" class="summary-content">
+        <span class="value-mono summary-empty">—</span>
+      </div>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-section">
+      <span class="summary-label label-mono">chains</span>
+      <div id="summary-chains" class="summary-content">
+        <span class="value-mono summary-empty">—</span>
+      </div>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-section">
+      <span class="summary-label label-mono">findings</span>
+      <div id="summary-findings" class="summary-content">
+        <span class="value-mono summary-empty">—</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================ -->
+  <!-- COMMAND PALETTE OVERLAY                                      -->
+  <!-- ============================================================ -->
+  <div id="palette-backdrop" class="palette-backdrop" aria-hidden="true"></div>
+  <div id="command-palette" class="command-palette" role="dialog" aria-modal="true" aria-label="Command palette" aria-hidden="true">
+    <div class="palette-input-wrap">
+      <svg class="palette-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21l-4.35-4.35"/><circle cx="11" cy="11" r="8"/></svg>
+      <input type="text" id="palette-input" class="palette-input" placeholder="Search commands, agents, findings, tasks…" autocomplete="off" spellcheck="false" aria-label="Command input">
+      <kbd class="palette-kbd">ESC</kbd>
+    </div>
+    <div id="palette-results" class="palette-results" role="listbox" aria-label="Command results">
+      <div class="palette-empty">
+        <span class="value-mono">Start typing to search…</span>
+      </div>
+    </div>
+    <div class="palette-footer">
+      <div class="palette-hint-group">
+        <kbd class="palette-kbd-sm">↑↓</kbd>
+        <span class="label-mono">navigate</span>
+      </div>
+      <div class="palette-hint-group">
+        <kbd class="palette-kbd-sm">↵</kbd>
+        <span class="label-mono">select</span>
+      </div>
+      <div class="palette-hint-group">
+        <kbd class="palette-kbd-sm">esc</kbd>
+        <span class="label-mono">close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- LOADING SPLASH (shown until JS initializes)                  -->
+  <!-- ============================================================ -->
+  <div id="splash" class="splash">
+    <div class="splash-content">
+      <span class="logo-mono splash-logo">PI-SEC</span>
+      <div class="splash-spinner"></div>
+      <span class="value-mono splash-status">initializing…</span>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ROOT DATA ELEMENT (JSON config injected by server on boot)   -->
+  <!-- ============================================================ -->
+  <script id="boot-config" type="application/json">
+  {
+    "wsPath": "/ws",
+    "apiBase": "/api",
+    "pollInterval": 2000,
+    "maxLogEntries": 500,
+    "maxActivityEntries": 200
+  }
+  </script>
+
+  <script type="module" src="/js/app.js"></script>
+</body>
+</html>

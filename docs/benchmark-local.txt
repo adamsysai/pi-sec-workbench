@@ -1,0 +1,9 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/adamsysai/pi-sec-workbench/internal/queue
+cpu: Apple M4 Pro
+BenchmarkCreateClaimComplete-12    	   10000	   1905914 ns/op	   18033 B/op	     376 allocs/op
+BenchmarkCreateClaimComplete-12    	    7533	   1985020 ns/op	   18040 B/op	     376 allocs/op
+BenchmarkCreateClaimComplete-12    	    3104	   1188199 ns/op	   18226 B/op	     377 allocs/op
+PASS
+ok  	github.com/adamsysai/pi-sec-workbench/internal/queue	40.508s

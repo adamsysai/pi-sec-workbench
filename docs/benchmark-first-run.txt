@@ -1,0 +1,10 @@
+goos: darwin
+goarch: arm64
+pkg: github.com/adamsysai/pi-sec-workbench/internal/queue
+cpu: Apple M4 Pro
+BenchmarkCreateClaimComplete-12    	    8780	   1484938 ns/op	   15714 B/op	     345 allocs/op
+BenchmarkCreateClaimComplete-12    	    6138	   1385092 ns/op	   15751 B/op	     345 allocs/op
+BenchmarkCreateClaimComplete-12    	--- FAIL: BenchmarkCreateClaimComplete-12
+    store_test.go:259: claim: <nil>
+PASS
+ok  	github.com/adamsysai/pi-sec-workbench/internal/queue	32.827s

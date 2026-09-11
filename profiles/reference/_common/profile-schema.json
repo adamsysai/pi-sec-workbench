@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pi Profile Schema",
+  "description": "Declarative configuration for an isolated Pi profile",
+  "type": "object",
+  "required": ["name", "description"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Profile identifier (e.g. 'pi-sec')"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short human-readable description"
+    },
+    "model": {
+      "type": "string",
+      "description": "Default model pattern or provider/id (e.g. 'glm-5.2', 'zai/glm-5.3')",
+      "default": "glm-5.2"
+    },
+    "thinking": {
+      "type": "string",
+      "enum": ["off", "minimal", "low", "medium", "high", "xhigh", "max"],
+      "description": "Default thinking level",
+      "default": "high"
+    },
+    "packages": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "NPM packages to enable. Use 'pkg@version' for pinning. Use 'pkg' for latest."
+    },
+    "extensions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Additional local extension file paths to load"
+    },
+    "skills": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Skill directories or files to load"
+    },
+    "systemPrompt": {
+      "type": "string",
+      "description": "Path to system.md file for this profile, or inline text"
+    },
+    "excludeTools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Tool names to disable (denylist)"
+    },
+    "allowTools": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "If set, only these tools are enabled (allowlist). Built-ins like read/bash/edit/write are always included."
+    },
+    "env": {
+      "type": "object",
+      "description": "Environment variables to set when launching",
+      "additionalProperties": { "type": "string" }
+    },
+    "sessionDir": {
+      "type": "string",
+      "description": "Session directory for this profile (isolates sessions per-profile)"
+    },
+    "mcpServers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "command": { "type": "string" },
+          "args": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["name", "command"]
+      },
+      "description": "MCP servers to enable for this profile"
+    },
+    "swarm": {
+      "type": "object",
+      "description": "Multi-agent swarm configuration",
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "subagents": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Subagent names this profile can spawn (e.g. 'web', 'api', 'auth')"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "description": "Authorization scope guard (for security profiles)",
+      "properties": {
+        "authorized": { "type": "boolean", "default": false },
+        "targets": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Authorized target IPs, domains, or CIDR ranges"
+        },
+        "enforce": { "type": "boolean", "default": true }
+      }
+    }
+  }
+}

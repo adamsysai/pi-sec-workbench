@@ -1,0 +1,10 @@
+{
+ "compilerOptions": {
+  "target":"ES2023", "module":"NodeNext", "moduleResolution":"NodeNext",
+  "strict":true, "noUncheckedIndexedAccess":true, "noUnusedLocals":true,
+  "noUnusedParameters":true, "verbatimModuleSyntax":true,
+  "allowImportingTsExtensions":true, "noEmit":true,
+  "lib":["ES2023","DOM","DOM.Iterable"], "skipLibCheck":true
+ },
+ "include":["sdk/**/*.ts","extensions/**/*.ts","web/src/**/*.ts","scripts/**/*.ts"]
+}

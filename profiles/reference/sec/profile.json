@@ -1,0 +1,75 @@
+{
+  "name": "pi-sec",
+  "description": "Autonomous authorized security research agent \u2014 swarm-based hypothesis-driven vulnerability discovery with knowledge pipeline",
+  "thinking": "high",
+  "packages": [
+    "npm:pi-messenger-swarm",
+    "npm:pi-lens"
+  ],
+  "extensions": [
+    "extensions/scope-guard-v2.ts",
+    "extensions/security-graph.ts",
+    "extensions/task-manager.ts",
+    "extensions/observability.ts",
+    "extensions/corpus-ingestor.ts",
+    "extensions/security-rag.ts",
+    "extensions/pattern-library.ts",
+    "extensions/budget-manager.ts",
+    "extensions/evaluation.ts",
+    "extensions/learning-loop.ts",
+    "extensions/collective-memory.ts"
+  ],
+  "skills": [
+    "skills/web-pentest",
+    "skills/api-security",
+    "skills/auth-testing",
+    "skills/vuln-validation",
+    "skills/report-writing",
+    "skills/cloud-security",
+    "skills/mobile-security",
+    "skills/smart-contract-security",
+    "skills/recon-methodology",
+    "skills/defi-taxonomy",
+    "skills/target-profiles"
+  ],
+  "systemPrompt": "system.md",
+  "excludeTools": [
+    "telegram_message",
+    "telegram_help",
+    "telegram_attach"
+  ],
+  "env": {
+    "PI_PROFILE": "sec"
+  },
+  "swarm": {
+    "enabled": true,
+    "subagents": [
+      "orchestrator",
+      "recon:subdomain",
+      "recon:endpoint",
+      "recon:technology",
+      "api",
+      "web",
+      "auth",
+      "authorization",
+      "business-logic",
+      "dataflow",
+      "identity",
+      "architecture",
+      "hypothesis",
+      "correlation",
+      "attack-chain",
+      "defense-aware",
+      "critic",
+      "validator",
+      "meta-reasoner",
+      "synthesizer"
+    ]
+  },
+  "scope": {
+    "authorized": false,
+    "targets": [],
+    "excluded": [],
+    "enforce": true
+  }
+}
